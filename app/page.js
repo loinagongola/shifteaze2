@@ -17,7 +17,7 @@ const Login = () => {
         const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
-          window.location.href = "/dashboard/searchname";
+          window.location.href = "/dashboard";
         }
       }
     });
@@ -35,7 +35,7 @@ const Login = () => {
       if (!userDocSnap.exists()) {
         window.location.href = "/signup";
       } else {
-        window.location.href = "/dashboard/searchname";
+        window.location.href = "/dashboard";
       }
     } catch (error) {
       setError(error.message);

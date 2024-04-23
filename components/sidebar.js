@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Link from "next/link";
 
@@ -13,50 +14,32 @@ const Sidebar = () => {
             </Link>
           </li>
           <li className="mb-8">
-            <Link
-              href="/dashboard/add-workers.js"
-              className="hover:text-blue-500"
-            >
+            <Link href="/add-workers" className="hover:text-blue-500">
               Add Workers
             </Link>
           </li>
           <li className="mb-8">
-            <Link
-              href="/dashboard/edit-workers"
-              className="hover:text-blue-500"
-            >
+            <Link href="/edit-workers" className="hover:text-blue-500">
               Edit Workers
             </Link>
           </li>
           <li className="mb-8">
-            <Link
-              href="/dashboard/adjust-hours"
-              className="hover:text-blue-500"
-            >
+            <Link href="/adjust-hours" className="hover:text-blue-500">
               Adjust Hours
             </Link>
           </li>
           <li className="mb-8">
-            <Link
-              href="/dashboard/workers-dashboard"
-              className="hover:text-blue-500"
-            >
+            <Link href="/workers-dashboard" className="hover:text-blue-500">
               Workers Dashboard
             </Link>
           </li>
           <li className="mb-8">
-            <Link
-              href="/dashboard/request-leave"
-              className="hover:text-blue-500"
-            >
-              Request Leave
+            <Link href="/leave-request" className="hover:text-blue-500">
+              Leave Request
             </Link>
           </li>
           <li className="mb-8">
-            <Link
-              href="/dashboard/work-history"
-              className="hover:text-blue-500"
-            >
+            <Link href="/work-history" className="hover:text-blue-500">
               Work History
             </Link>
           </li>

@@ -1,13 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { useRouter } from "next/router"; // Import useRouter from next/router
 import firebaseApp from "../../utils/firebase"; // Import firebaseApp from utils
 import Link from "next/link";
 
 const Signup = () => {
   const [error, setError] = useState("");
-  const router = useRouter(); // Initialize useRouter
 
   const handleGoogleSignup = async () => {
     const auth = getAuth(firebaseApp);
@@ -15,7 +13,7 @@ const Signup = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       // Redirect to dashboard or desired page after sign-up
-      router.push("/dashboard");
+      window.location.href = "/dashboard";
     } catch (error) {
       setError(error.message);
     }
