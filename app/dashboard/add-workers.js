@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "../../components/sidebar";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import firebaseApp from "../../utils/firebase";
