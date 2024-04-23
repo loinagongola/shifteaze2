@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useEffect } from "react";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
@@ -57,7 +56,7 @@ const Login = () => {
           Sign in with Google
         </button>
         <p className="mt-4 text-white text-sm">
-          Dont have an account?{" "}
+          Don't have an account?{" "}
           <Link href="/signup" className="text-blue-400 hover:underline">
             Sign up here
           </Link>
