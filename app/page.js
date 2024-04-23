@@ -57,7 +57,7 @@ const Login = () => {
           Sign in with Google
         </button>
         <p className="mt-4 text-white text-sm">
-          Don&apos;t have an account?{" "}
+          Dont have an account?{" "}
           <Link href="/signup" className="text-blue-400 hover:underline">
             Sign up here
           </Link>
