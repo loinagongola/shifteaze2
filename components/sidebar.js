@@ -14,7 +14,7 @@ const Sidebar = () => {
           </li>
           <li className="mb-8">
             <Link
-              href="/app/dashboard/add-workers.js"
+              href="../dashboard/add-workers.js"
               className="hover:text-blue-500"
             >
               Add Workers
