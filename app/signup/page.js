@@ -1,21 +1,50 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import firebaseApp from "../../utils/firebase"; // Import firebaseApp from utils
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import firebaseApp from "../../utils/firebase";
+import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
 import Link from "next/link";
+
+const db = getFirestore(firebaseApp);
 
 const Signup = () => {
   const [error, setError] = useState("");
+  const router = useRouter(); // Initialize useRouter
+
+  useEffect(() => {
+    const auth = getAuth(firebaseApp);
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const userDocRef = doc(db, "users", user.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          router.push("/login"); // Redirect to login if user exists
+        }
+      }
+    });
+    return unsubscribe;
+  }, []);
 
   const handleGoogleSignup = async () => {
     const auth = getAuth(firebaseApp);
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      // Redirect to dashboard or desired page after sign-up
-      window.location.href = "/dashboard";
+      const user = result.user;
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      if (!userDocSnap.exists()) {
+        // Save user information to Firestore
+        await setDoc(userDocRef, {
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        });
+      }
+      router.push("/dashboard"); // Redirect to dashboard
     } catch (error) {
-      setError(error.message);
+      setError(error.message); // Handle sign-in errors
     }
   };
 

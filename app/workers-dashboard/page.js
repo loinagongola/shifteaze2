@@ -1,82 +1,66 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 import firebaseApp from "../../utils/firebase";
 
-const db = getFirestore(firebaseApp);
-
-const WorkerDashboard = ({ userName }) => {
-  const [currentTime, setCurrentTime] = useState("");
-  const [error, setError] = useState("");
-  const [status, setStatus] = useState(""); // "Punched in", "On Break", "Punched out"
+export default function WorkerSearchPage() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedName, setSelectedName] = useState("");
+  const [password, setPassword] = useState("");
+  const [workerNames, setWorkerNames] = useState([]);
   const [loading, setLoading] = useState(true);
+  const db = getFirestore(firebaseApp);
 
   useEffect(() => {
-    const getCurrentTime = () => {
-      const now = new Date();
-      setCurrentTime(now.toLocaleTimeString());
-    };
-
-    const fetchWorkerStatus = async () => {
-      const auth = getAuth(firebaseApp);
-      const user = auth.currentUser;
-
-      if (!user) {
-        setError("User not signed in.");
-        setLoading(false);
-        return;
-      }
-
+    const fetchWorkerNames = async () => {
       try {
-        // Fetch worker status from Firestore
-        // Update 'status' state accordingly
+        const auth = getAuth();
+        if (!auth.currentUser) {
+          // Redirect to login page if not authenticated
+          window.location.href = "/login";
+          return;
+        }
+        const workersCollection = collection(db, "workers");
+        const querySnapshot = await getDocs(workersCollection);
+        const names = [];
+        querySnapshot.forEach((doc) => {
+          names.push(doc.data().name);
+        });
+        setWorkerNames(names);
+        setLoading(false);
       } catch (error) {
-        setError("Error fetching worker status: " + error.message);
+        console.error("Error fetching worker names:", error);
+        setLoading(false);
       }
     };
 
-    getCurrentTime();
-    fetchWorkerStatus();
-    const interval = setInterval(getCurrentTime, 1000); // Update current time every second
+    fetchWorkerNames();
+  }, [db]);
 
-    return () => clearInterval(interval);
-  }, []);
+  const handleSearch = () => {
+    const filteredResults = workerNames.filter((name) =>
+      name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return filteredResults;
+  };
 
-  const handlePunchIn = async () => {
-    try {
-      // Update worker status in Firestore to "Punched in"
-    } catch (error) {
-      setError("Error punching in: " + error.message);
+  const handleNameClick = (name) => {
+    setSelectedName(name);
+    setSearchQuery(name);
+  };
+
+  const handlePasswordInput = (e) => {
+    const value = e.target.value;
+    if (/^\d*$/.test(value) || value === "") {
+      setPassword(value);
     }
   };
 
-  const handleStartBreak = async () => {
-    try {
-      // Update worker status in Firestore to "On Break"
-    } catch (error) {
-      setError("Error starting break: " + error.message);
-    }
-  };
-
-  const handleStopBreak = async () => {
-    try {
-      // Update worker status in Firestore to "Punched in"
-    } catch (error) {
-      setError("Error stopping break: " + error.message);
-    }
-  };
-
-  const handlePunchOut = async () => {
-    try {
-      // Update worker status in Firestore to "Punched out"
-    } catch (error) {
-      setError("Error punching out: " + error.message);
-    }
-  };
-
-  const handleRequestLeave = async () => {
-    // Redirect to the leave request page
+  const handleEnter = () => {
+    // Redirect to punch in/out page with selected worker's name
+    window.location.href = `/punch/${selectedName}`;
   };
 
   if (loading) {
@@ -84,86 +68,55 @@ const WorkerDashboard = ({ userName }) => {
   }
 
   return (
-    <div
-      className="worker-dashboard"
-      style={{ backgroundColor: "#0052cc", color: "white" }}
-    >
-      <h1>Welcome, {userName}!</h1>
-      <p>Current Time: {currentTime}</p>
-      <p>Status: {status}</p>
-      {status === "Punched out" ? (
-        <button
-          style={{
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            padding: "8px 16px",
-            margin: "4px",
-            cursor: "pointer",
-          }}
-          onClick={handlePunchIn}
-        >
-          Punch In
-        </button>
-      ) : (
-        <>
-          <button
-            style={{
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              padding: "8px 16px",
-              margin: "4px",
-              cursor: "pointer",
-            }}
-            onClick={handlePunchOut}
-          >
-            Punch Out
-          </button>
-          <button
-            style={{
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              padding: "8px 16px",
-              margin: "4px",
-              cursor: "pointer",
-            }}
-            onClick={handleStartBreak}
-          >
-            Start Break
-          </button>
-          <button
-            style={{
-              backgroundColor: "#007bff",
-              color: "white",
-              border: "none",
-              padding: "8px 16px",
-              margin: "4px",
-              cursor: "pointer",
-            }}
-            onClick={handleStopBreak}
-          >
-            Stop Break
-          </button>
-        </>
-      )}
-      <button
-        style={{
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          padding: "8px 16px",
-          margin: "4px",
-          cursor: "pointer",
-        }}
-        onClick={handleRequestLeave}
-      >
-        Request Leave
-      </button>
-      {error && <p>Error: {error}</p>}
-    </div>
-  );
-};
+    <main className="flex min-h-screen bg-gradient-to-r from-cyan-900 to-blue-900">
+      <div className="w-full flex flex-col justify-center items-center">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Enter name to search"
+          className="bg-gradient-to-r from-cyan-900 to-blue-900 text-white rounded-md py-2 px-4 mb-4 w-3/4 text-center"
+        />
+        {searchQuery && (
+          <div className="flex flex-wrap justify-center">
+            {handleSearch().map((name) => (
+              <button
+                key={name}
+                className="bg-secondary text-main-color rounded-md py-2 px-4 mr-2 mb-2"
+                onClick={() => handleNameClick(name)}
+              >
+                {name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
-export default WorkerDashboard;
+      {selectedName && (
+        <div className="w-full flex flex-col justify-center items-center">
+          <input
+            type="text"
+            value={selectedName}
+            readOnly
+            className="bg-gradient-to-r from-cyan-900 to-blue-900 text-white rounded-md py-2 px-4 mb-4 w-3/4 text-center"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={handlePasswordInput}
+            placeholder="Enter your numeric password"
+            className="bg-gradient-to-r from-cyan-900 to-blue-900 text-white rounded-md py-2 px-4 mb-4 w-3/4 text-center"
+          />
+          {password && (
+            <button
+              onClick={handleEnter}
+              className="bg-secondary text-main-color rounded-md py-2 px-4"
+            >
+              Enter
+            </button>
+          )}
+        </div>
+      )}
+    </main>
+  );
+}

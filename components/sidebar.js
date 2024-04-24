@@ -39,8 +39,8 @@ const Sidebar = () => {
             </Link>
           </li>
           <li className="mb-8">
-            <Link href="/work-history" className="hover:text-blue-500">
-              Work History
+            <Link href="/workers-information" className="hover:text-blue-500">
+              Workers Information
             </Link>
           </li>
           <li className="mb-8">

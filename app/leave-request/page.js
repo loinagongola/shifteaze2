@@ -59,15 +59,15 @@ const RequestLeavePage = ({ userName }) => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen ">
       <Sidebar userName={userName} />
-      <div className="flex-1 bg-gray-200 overflow-y-auto">
+      <div className="flex-1 bg-gradient-to-r from-cyan-900 to-blue-900 overflow-y-auto">
         <div className="container mx-auto py-8 px-4">
           <h1 className="text-2xl font-bold mb-4">Request Leave</h1>
           <form onSubmit={handleSubmit} className="max-w-md">
             {error && <p className="text-red-500 mb-4">{error}</p>}
             <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2">
+              <label className="block text-white text-sm font-bold mb-2">
                 Reason
               </label>
               <textarea

@@ -3,12 +3,14 @@ import React, { useState, useEffect } from "react";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 import firebaseApp from "../utils/firebase";
+import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
 import Link from "next/link";
 
 const db = getFirestore(firebaseApp);
 
 const Login = () => {
   const [error, setError] = useState("");
+  const router = useRouter(); // Initialize useRouter
 
   useEffect(() => {
     const auth = getAuth(firebaseApp);
@@ -17,7 +19,7 @@ const Login = () => {
         const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
-          window.location.href = "/dashboard";
+          router.push("/dashboard"); // Redirect to dashboard if user exists
         }
       }
     });
@@ -33,12 +35,12 @@ const Login = () => {
       const userDocRef = doc(db, "users", user.uid);
       const userDocSnap = await getDoc(userDocRef);
       if (!userDocSnap.exists()) {
-        window.location.href = "/signup";
+        router.push("/signup"); // Redirect to signup if user doesn't exist
       } else {
-        window.location.href = "/dashboard";
+        router.push("/dashboard"); // Redirect to dashboard if user exists
       }
     } catch (error) {
-      setError(error.message);
+      setError(error.message); // Handle sign-in errors
     }
   };
 
