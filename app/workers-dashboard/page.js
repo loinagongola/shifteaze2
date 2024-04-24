@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
-import firebaseApp from "../../utils/firebase";
+import { firebaseApp } from "../../utils/firebase";
 
 export default function WorkerSearchPage() {
   const [searchQuery, setSearchQuery] = useState("");

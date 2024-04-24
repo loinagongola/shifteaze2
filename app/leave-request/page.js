@@ -9,7 +9,7 @@ import {
   collection,
   addDoc,
 } from "firebase/firestore";
-import firebaseApp from "../../utils/firebase";
+import { firebaseApp } from "../../utils/firebase";
 
 const db = getFirestore(firebaseApp);
 

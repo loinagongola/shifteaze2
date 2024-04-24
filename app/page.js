@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-import firebaseApp from "../utils/firebase";
+import { firebaseApp } from "../utils/firebase";
 import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
 import Link from "next/link";
 

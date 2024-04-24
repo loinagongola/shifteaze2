@@ -1,8 +1,22 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import { getAuth, signOut } from "firebase/auth";
+import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
 
 const Sidebar = () => {
+  const router = useRouter(); // Initialize useRouter
+
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      router.push("/app"); // Redirect to login page after logout
+    } catch (error) {
+      console.error("Error signing out:", error.message);
+    }
+  };
+
   return (
     <div className="bg-gray-800 text-white w-64 flex flex-col justify-between">
       <div className="p-4">
@@ -43,15 +57,14 @@ const Sidebar = () => {
               Workers Information
             </Link>
           </li>
+
           <li className="mb-8">
-            <Link href="/dashboard/punch-in" className="hover:text-blue-500">
-              Punch In
-            </Link>
-          </li>
-          <li className="mb-8">
-            <Link href="/dashboard/punch-out" className="hover:text-blue-500">
-              Punch Out
-            </Link>
+            <button
+              onClick={handleLogout}
+              className="hover:text-blue-500 w-full text-left mt-24"
+            >
+              Logout
+            </button>
           </li>
         </ul>
       </div>

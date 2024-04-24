@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/sidebar";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-import firebaseApp from "../../utils/firebase";
+import { firebaseApp } from "../../utils/firebase";
 
 const db = getFirestore(firebaseApp);
 
