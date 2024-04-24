@@ -14,6 +14,7 @@ import { firebaseApp } from "../../utils/firebase";
 const db = getFirestore(firebaseApp);
 
 const WorkHistoryPage = ({ userName }) => {
+  // State variables to hold workers data, selected worker, error message, and loading state
   const [workers, setWorkers] = useState([]);
   const [selectedWorker, setSelectedWorker] = useState(null);
   const [error, setError] = useState("");
@@ -24,6 +25,7 @@ const WorkHistoryPage = ({ userName }) => {
       const auth = getAuth(firebaseApp);
       const user = auth.currentUser;
 
+      // Check if user is authenticated
       if (!user) {
         setError("User not signed in.");
         setLoading(false);
@@ -31,16 +33,18 @@ const WorkHistoryPage = ({ userName }) => {
       }
 
       try {
+        // Construct query to fetch workers under current user
         const userDocRef = doc(db, "users", user.uid);
         const workersCollectionRef = collection(userDocRef, "workers");
         const q = query(workersCollectionRef);
 
+        // Fetch workers data
         const querySnapshot = await getDocs(q);
         const workersData = [];
         querySnapshot.forEach((doc) => {
           workersData.push({ id: doc.id, ...doc.data() });
         });
-        setWorkers(workersData);
+        setWorkers(workersData); // Set workers data to state
         setLoading(false);
       } catch (error) {
         setError("Error fetching workers: " + error.message);
@@ -48,13 +52,15 @@ const WorkHistoryPage = ({ userName }) => {
       }
     };
 
-    fetchWorkers();
+    fetchWorkers(); // Call fetchWorkers function
   }, []);
 
+  // Function to handle selection of a worker
   const handleSelectWorker = (worker) => {
     setSelectedWorker(worker);
   };
 
+  // Display loading message while fetching data
   if (loading) {
     return <div>Loading...</div>;
   }

@@ -11,7 +11,7 @@ const Sidebar = () => {
     const auth = getAuth();
     try {
       await signOut(auth);
-      router.push("/app"); // Redirect to login page after logout
+      router.push("/signin"); // Redirect to login page after logout
     } catch (error) {
       console.error("Error signing out:", error.message);
     }
@@ -33,23 +33,8 @@ const Sidebar = () => {
             </Link>
           </li>
           <li className="mb-8">
-            <Link href="/edit-workers" className="hover:text-blue-500">
-              Edit Workers
-            </Link>
-          </li>
-          <li className="mb-8">
-            <Link href="/adjust-hours" className="hover:text-blue-500">
-              Adjust Hours
-            </Link>
-          </li>
-          <li className="mb-8">
             <Link href="/workers-dashboard" className="hover:text-blue-500">
               Workers Dashboard
-            </Link>
-          </li>
-          <li className="mb-8">
-            <Link href="/leave-request" className="hover:text-blue-500">
-              Leave Request
             </Link>
           </li>
           <li className="mb-8">

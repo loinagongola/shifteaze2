@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
 import { firebaseApp } from "../../utils/firebase";
@@ -22,12 +21,11 @@ export default function WorkerSearchPage() {
           window.location.href = "/login";
           return;
         }
+
         const workersCollection = collection(db, "workers");
         const querySnapshot = await getDocs(workersCollection);
-        const names = [];
-        querySnapshot.forEach((doc) => {
-          names.push(doc.data().name);
-        });
+
+        const names = querySnapshot.docs.map((doc) => doc.data().firstName);
         setWorkerNames(names);
         setLoading(false);
       } catch (error) {

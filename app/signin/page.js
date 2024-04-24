@@ -1,14 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
 import { firebaseApp } from "../../utils/firebase";
 import { useRouter } from "next/navigation"; // Import useRouter from next/navigation
 import Link from "next/link";
 
 const db = getFirestore(firebaseApp);
 
-const Signup = () => {
+const Login = () => {
   const [error, setError] = useState("");
   const router = useRouter(); // Initialize useRouter
 
@@ -19,14 +19,14 @@ const Signup = () => {
         const userDocRef = doc(db, "users", user.uid);
         const userDocSnap = await getDoc(userDocRef);
         if (userDocSnap.exists()) {
-          router.push("/signin"); // Redirect to login if user exists
+          router.push("/dashboard"); // Redirect to dashboard if user exists
         }
       }
     });
     return unsubscribe;
   }, []);
 
-  const handleGoogleSignup = async () => {
+  const handleGoogleSignIn = async () => {
     const auth = getAuth(firebaseApp);
     const provider = new GoogleAuthProvider();
     try {
@@ -35,14 +35,10 @@ const Signup = () => {
       const userDocRef = doc(db, "users", user.uid);
       const userDocSnap = await getDoc(userDocRef);
       if (!userDocSnap.exists()) {
-        // Save user information to Firestore
-        await setDoc(userDocRef, {
-          displayName: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-        });
+        router.push("/signup"); // Redirect to signup if user doesn't exist
+      } else {
+        router.push("/dashboard"); // Redirect to dashboard if user exists
       }
-      router.push("/dashboard"); // Redirect to dashboard
     } catch (error) {
       setError(error.message); // Handle sign-in errors
     }
@@ -54,18 +50,18 @@ const Signup = () => {
         <h1 className="font-bold text-6xl text-white mb-12">ShiftEaze</h1>
       </div>
       <div className="w-6/12 h-screen flex flex-col justify-center items-center">
-        <h2 className="text-white text-4xl mb-8">Sign Up</h2>
+        <h2 className="text-white text-4xl mb-8">Login</h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         <button
-          onClick={handleGoogleSignup}
+          onClick={handleGoogleSignIn}
           className="bg-blue-500 text-white rounded-md py-3 px-6 mb-4 w-64 transition duration-300 ease-in-out hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
         >
-          Sign up with Google
+          Sign in with Google
         </button>
         <p className="mt-4 text-white text-sm">
-          Already have an account?{" "}
-          <Link href="/login" className="text-blue-400 hover:underline">
-            Log in here
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-blue-400 hover:underline">
+            Sign up here
           </Link>
         </p>
       </div>
@@ -73,4 +69,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;

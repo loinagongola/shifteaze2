@@ -11,7 +11,7 @@ const Dashboard = () => {
     const auth = getAuth();
     try {
       await signOut(auth);
-      router.push("../app"); // Redirect to login page after sign out
+      router.push("/signin"); // Redirect to login page after sign out
     } catch (error) {
       console.error("Error signing out:", error.message);
     }
