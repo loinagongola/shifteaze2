@@ -146,8 +146,13 @@ const WorkHistoryPage = ({ userName }) => {
   // Handle start break action
   const handleStartBreak = async () => {
     try {
-      // Add logic to record start break time in the database
-      // Update the state variables accordingly
+      const timestamp = serverTimestamp();
+      const workerDocRef = doc(db, "users", selectedWorker.id);
+      await addDoc(collection(workerDocRef, "breaks"), {
+        startTime: timestamp,
+      });
+      setIsOnBreak(true);
+      setError("");
     } catch (error) {
       setError("Error starting break: " + error.message);
     }
@@ -156,18 +161,25 @@ const WorkHistoryPage = ({ userName }) => {
   // Handle end break action
   const handleEndBreak = async () => {
     try {
-      // Add logic to record end break time in the database
-      // Update the state variables accordingly
+      const timestamp = serverTimestamp();
+      const workerDocRef = doc(db, "users", selectedWorker.id);
+      await addDoc(collection(workerDocRef, "breaks"), { endTime: timestamp });
+      setIsOnBreak(false);
+      setError("");
     } catch (error) {
       setError("Error ending break: " + error.message);
     }
   };
 
-  // Handle leave request action
   const handleLeaveRequest = async () => {
     try {
-      // Add logic to handle leave request
-      // Save leave request information in the database under the selected worker's name
+      const timestamp = serverTimestamp();
+      const workerDocRef = doc(db, "users", selectedWorker);
+      await addDoc(collection(workerDocRef, "leaveRequests"), { timestamp });
+      setError("");
+
+      // Redirect to the leave request page
+      router.push("/leave-request");
     } catch (error) {
       setError("Error handling leave request: " + error.message);
     }
